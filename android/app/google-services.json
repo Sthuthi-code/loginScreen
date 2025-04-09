@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "687933749770",
+    "firebase_url": "https://react-native-project-27db6-default-rtdb.firebaseio.com",
+    "project_id": "react-native-project-27db6",
+    "storage_bucket": "react-native-project-27db6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687933749770:android:331502ef245e20509b3df3",
+        "android_client_info": {
+          "package_name": "com.loginscreen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687933749770-7csgirk1l1blkfltag8sluartpjqi0f6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGzb_46gF866WIaGef6nla58Emu3nhtgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687933749770-7csgirk1l1blkfltag8sluartpjqi0f6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

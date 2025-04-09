@@ -1,0 +1,1 @@
+/home/user/Work/ReactNative Milestones/loginScreen/android/app/build/intermediates/cxx/Debug/5mv653ep/obj/armeabi-v7a
