@@ -80,6 +80,17 @@ function AuthenticatedStack() {
   );
 }
 
+const linking = {
+  prefixes: ['loginscreen://', 'https://loginscreen.com'], // <-- your URL schemes
+  config: {
+    screens: {
+      Home: 'home',
+      Chat: 'chat',
+      Profile: 'profile',
+    },
+  },
+};
+
 function Navigation({navigationRef}) {
   const authCtx = useContext(AuthContext);
   const themeCtx = useContext(ThemeContext);
@@ -94,7 +105,7 @@ function Navigation({navigationRef}) {
     <PaperProvider theme={theme} >
       <SafeAreaProvider>
         <GestureHandlerRootView>
-          <NavigationContainer ref={navigationRef} >
+          <NavigationContainer linking={linking} ref={navigationRef} >
           {authCtx.isAuthenticated ? <AuthenticatedStack /> : <AuthStack />}
           </NavigationContainer>
         </GestureHandlerRootView>

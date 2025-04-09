@@ -24,7 +24,7 @@ const ChatStackScreen = () => {
       <ChatStack.Screen
         name="ChatScreen"
         component={ChatScreen}
-        options={({ route }) => ({ title: route.params.user.name })}
+        options={({ route }) => ({ title: route.params.user.firstName })}
       />
     </ChatStack.Navigator>
   );

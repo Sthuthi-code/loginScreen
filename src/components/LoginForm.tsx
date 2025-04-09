@@ -11,7 +11,7 @@ import { getFontFamily } from '../utils/fontFamily';
 import { login } from '../services/apiRequest';
 import { AuthContext } from '../store/auth-context';
 import { getAuth, signInWithCredential, GoogleAuthProvider } from '@firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+// import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Checkbox } from 'react-native-paper';
@@ -20,13 +20,14 @@ function LoginForm(): React.JSX.Element {
 
   const authCtx = useContext(AuthContext);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(()=>{
-      GoogleSignin.configure({
-        webClientId: '687933749770-7csgirk1l1blkfltag8sluartpjqi0f6.apps.googleusercontent.com',
-        offlineAccess: true, // Required for Firebase Auth
-      });
-    },[]);
+    // useEffect(()=>{
+    //   GoogleSignin.configure({
+    //     webClientId: '687933749770-7csgirk1l1blkfltag8sluartpjqi0f6.apps.googleusercontent.com',
+    //     offlineAccess: true, // Required for Firebase Auth
+    //   });
+    // },[]);
 
     const [userDetails, setUserDetails] = useState({
         email: '',
@@ -34,6 +35,7 @@ function LoginForm(): React.JSX.Element {
     });
 
     const handleTextChange = (field: string, value: string) =>{
+      setErrorMessage('');
       setUserDetails((prevUserDetails) => ({
         ...prevUserDetails,
         [field]: value,
@@ -46,41 +48,11 @@ function LoginForm(): React.JSX.Element {
         await AsyncStorage.setItem('token', response);
         authCtx.authenticate(response, userDetails.email);
       }catch(error){
-        Alert.alert(
-          'Authentication failed!',
-          'Could not log you in. Please check your credentials or try again later!'
-        );
-      }
-    };
-
-    const handleGoogleLogin = async() => {
-      try {
-        await GoogleSignin.hasPlayServices();
-        const userInfo = await GoogleSignin.signIn();
-        console.log(userInfo, 'kk');
-        // const auth = getAuth();
-        // const googleCredential = GoogleAuthProvider.credential(userInfo.idToken);
-        // const userCredential = await signInWithCredential(auth, googleCredential);
-        // const token = await userCredential.user?.getIdToken();
-        // const userData = {
-        //     token,
-        //     displayName: userCredential.user?.displayName || '',
-        //     email: userCredential.user?.email || '',
-        //     photoURL: userCredential.user?.photoURL || '',
-        // };
-        // await AsyncStorage.setItem("userData", JSON.stringify(userData));
-        // console.log(token, 'ggooo');
-        // authCtx.authenticate(googleCredential.data.idToken);
-        // authCtx.setUserData(userData.displayName, userData.email, userData.photoURL);
-
-      } catch (error) {
-          Alert.alert(
-              'Authentication failed!',
-              'Could not sign you up. Please check your input or try again later!'
-          );
-          console.error('error',error);
-      }finally{
-          // setIsAuthenticating(false);
+        setErrorMessage('Could not log you in. Please check your credentials or try again later!');
+        // Alert.alert(
+        //   'Authentication failed!',
+        //   'Could not log you in. Please check your credentials or try again later!'
+        // );
       }
     };
 
@@ -91,7 +63,6 @@ function LoginForm(): React.JSX.Element {
         if (success) {
           Alert.alert( 'Success', 'Biometric authentication successful');
           const token = await AsyncStorage.getItem('token');
-          console.log(token, 'token');
           authCtx.authenticate(token, 'sthuthi@7edge.com');
           return true;
         } else {
@@ -154,7 +125,7 @@ function LoginForm(): React.JSX.Element {
     };
 
     useEffect(()=>{
-      enableBiometricAuth();
+      // enableBiometricAuth();
     },[]);
 
   return (
@@ -193,19 +164,19 @@ function LoginForm(): React.JSX.Element {
           <Text>Show Password</Text>
         </View>
 
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
         <Button mode="contained"
           disabled={!(userDetails.password && userDetails.email)}
           style={styles.loginButton} title="Login"
           onPress={handleLogin} />
 
-        <TouchableOpacity style={styles.googleButton}
-          onPress={handleGoogleLogin}>
-          {/* <Image source={require("./assets/google-icon.png")} style={styles.googleIcon} /> */}
+        {/* <TouchableOpacity style={styles.googleButton} >
           <Text style={styles.googleText}>Sign in with Google</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <Button mode="contained"
-          style={styles.loginButton} title="Biometric Login"
+          style={styles.googleButton} title="Biometric Login"
           onPress={handleBiometricAuth} />
       </>
   );
@@ -272,6 +243,11 @@ const styles = StyleSheet.create({
   checkbox: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  errorText: {
+    color: 'red', // 🔹 Error text color
+    marginTop: 10,
+    fontSize: 14,
   },
 });
 

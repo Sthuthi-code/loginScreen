@@ -13,12 +13,29 @@ import { addUser, createUser } from '../services/apiRequest';
 import { AuthContext } from '../store/auth-context';
 import OTPScreen from '../screens/OtpScreen';
 import { Checkbox } from 'react-native-paper';
+import { Menu, Provider } from 'react-native-paper';
 
 function RegisterForm(): React.JSX.Element {
 
   const authCtx = useContext(AuthContext);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [visible, setVisible] = React.useState(false);
+  const [selectedCode, setSelectedCode] = React.useState('');
 
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+
+  const phoneCodes = [
+    { label: '+1', value: 'US' },
+    { label: '+44', value: 'UK' },
+    { label: '+91', value: 'IN' },
+    { label: '+61', value: 'AU' },
+  ];
+
+  const handleSelect = (code) => {
+    setSelectedCode(code.label);
+    closeMenu();
+  };
 
     const [userDetails, setUserDetails] = useState({
         firstName: '',
@@ -30,8 +47,10 @@ function RegisterForm(): React.JSX.Element {
     const [otpScreen, setOtpScreen] = useState(false);
     const [otp, setOtp] = useState(['', '', '', '']);
     const [errorMessage, setErrorMessage] = useState('');
+    const [signinErrorMessage, setSigninErrorMessage] = useState('');
 
     const handleTextChange = (field: string, value: string) =>{
+      setSigninErrorMessage('');
       setUserDetails((prevUserDetails) => ({
         ...prevUserDetails,
         [field]: value,
@@ -57,10 +76,11 @@ function RegisterForm(): React.JSX.Element {
           console.log(response);
           authCtx.authenticate(token, userDetails.email);
         }catch(error){
-          Alert.alert(
-            'Authentication failed',
-            'Could not create user, please check your input and try again later.'
-          );
+          setSigninErrorMessage('Could not create user, please check your input and try again later.')
+          // Alert.alert(
+          //   'Authentication failed',
+          //   'Could not create user, please check your input and try again later.'
+          // );
         }
       }else{
         setErrorMessage('Invalid OTP. Please try again.');
@@ -93,6 +113,28 @@ function RegisterForm(): React.JSX.Element {
             onChangeText={(value) => handleTextChange('lastName', value)}
         />
         <Text style={styles.text}>Phone Number</Text>
+        {/* <Provider>
+          <View style={styles.dropdownContainer}>
+          <View style={{ width: 150, alignSelf: 'center' }}>
+            <Menu
+              visible={visible}
+              onDismiss={closeMenu}
+              anchor={
+                <Button mode="outlined" title={selectedCode || 'Select Code'} onPress={openMenu}>
+                </Button>
+              }
+            >
+              {phoneCodes.map((code) => (
+                <Menu.Item
+                  key={code.value}
+                  onPress={() => handleSelect(code)}
+                  title={code.label}
+                />
+              ))}
+            </Menu>
+            </View>
+          </View>
+        </Provider> */}
         <TextInput
             id="phoneNumber"
             label="Phone Number"
@@ -134,15 +176,16 @@ function RegisterForm(): React.JSX.Element {
             <Text>Show Password</Text>
         </View>
 
+        {signinErrorMessage ? <Text style={styles.errorText}>{signinErrorMessage}</Text> : null}
+
         <Button mode="contained"
           disabled={!(userDetails.firstName && userDetails.lastName && userDetails.phoneNumber && userDetails.email)}
           style={styles.registerButton} title="Register"
           onPress={handleRegister} />
 
-        <TouchableOpacity style={styles.googleButton}>
-          {/* <Image source={require("./assets/google-icon.png")} style={styles.googleIcon} /> */}
+        {/* <TouchableOpacity style={styles.googleButton}>
           <Text style={styles.googleText}>Sign in with Google</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </>
   );
 }
@@ -207,6 +250,16 @@ const styles = StyleSheet.create({
   checkbox: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  errorText: {
+    color: 'red', // 🔹 Error text color
+    marginTop: 10,
+    fontSize: 14,
+  },
+  dropdownContainer: {
+    paddingTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 });
 
